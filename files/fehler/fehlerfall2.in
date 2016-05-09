@@ -1,0 +1,9 @@
+;***************************
+;    Fehlerfall 2 - Ungültiger Kommentar 
+;***************************
+Auto
+Pruefung
+; Dieser Kommentar ist nicht erlaubt
+Ladung
+Ungarn
+Milch
