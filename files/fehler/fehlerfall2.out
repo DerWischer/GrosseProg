@@ -1,0 +1,6 @@
+;***************************
+;    Fehlerfall 2 - Ungültiger Kommentar 
+;***************************
+
+
+Kommentare düfen nur zu Beginn der Datei stehen: Aufgetreten in Zeile 6

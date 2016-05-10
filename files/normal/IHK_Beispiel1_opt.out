@@ -1,0 +1,25 @@
+;***************************
+;    Testfall 1
+;***************************
+
+Eingelesene Wörter: 
+AUTO, LADUNG, UNGARN, 
+MILCH
+
+Rätsel nicht versteckt
+MILCH 
+  AUTO
+  D   
+  U   
+  N   
+UNGARN
+
+Rätsel versteckt
+MILCHK
+SOAUTO
+RGDTGF
+WVUIPH
+DGNMFP
+UNGARN
+
+Kompaktheitsmaß: 36

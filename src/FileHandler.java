@@ -1,7 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -60,16 +61,18 @@ public class FileHandler {
 	 */
 	public List<String> lese(String pfad)
 			throws WrongFileFormatException, FileNotFoundException, EmptyFileException, MalformedInputException {
-		// prüfe Dateiendung
-		if (!pfad.endsWith(".in")) {
-			throw new WrongFileFormatException("Die Dateiendung entspricht nicht der einer Eingabedatei");
-		}
-
+		this.pfad = pfad;
+		
 		File eingabeDatei = new File(pfad);
 		// prüfe ob die Datei existiert
 		if (!eingabeDatei.exists()) {
 			throw new FileNotFoundException("Die Datei wurde nicht gefunden");
 		}
+		
+		// prüfe Dateiendung
+		if (!pfad.endsWith(".in")) {
+			throw new WrongFileFormatException();
+		}		
 
 		List<String> woerter = lese(eingabeDatei);
 
@@ -77,7 +80,7 @@ public class FileHandler {
 			throw new EmptyFileException("In der Datei sind keine Worte enthalten");
 		}
 
-		this.pfad = pfad;
+		this.woerter = woerter;
 		return woerter;
 	}
 
@@ -96,7 +99,7 @@ public class FileHandler {
 		ArrayList<String> woerter = new ArrayList<>();
 		Scanner sc = null;
 		try {
-			sc = new Scanner(eingabeDatei);
+			sc = new Scanner(eingabeDatei, "utf-8");
 
 			int currentLine = 1;
 			kommentar = "";
@@ -105,7 +108,7 @@ public class FileHandler {
 				String line = sc.nextLine();
 				if (line.startsWith(";")) {
 					if (kommentarValid) {
-						kommentar += "\n" + line;
+						kommentar += line + "\n";
 					} else {
 						throw new MalformedInputException(
 								"Kommentare düfen nur zu Beginn der Datei stehen: Aufgetreten in Zeile " + currentLine);
@@ -120,11 +123,11 @@ public class FileHandler {
 						}
 					}
 
-					if (woerter.contains(line)) {
+					if (woerter.contains(line.toUpperCase())) {
 						throw new MalformedInputException(
 								"Wörter dürfen nur einmal vorkommen. Aufgetreten in Zeile " + currentLine);
 					}
-					woerter.add(line);
+					woerter.add(line.toUpperCase());
 				}
 				currentLine++;
 			}
@@ -149,12 +152,13 @@ public class FileHandler {
 	public void schreibe(Raetsel r1, Raetsel r2) {
 		this.r1 = r1;
 		this.r2 = r2;
-		schreibeLoesung();	
+		schreibeLoesung();
 		schreibeLoesungOptimiert();
-	}	
+	}
 
 	/**
-	 * Hilfsmethode, die ein optimiertes Rätsel in einer Datei speicher. Der Dateipfad wird aus dem Dateipfad der Eingabedatei ermittelt.
+	 * Hilfsmethode, die ein optimiertes Rätsel in einer Datei speicher. Der
+	 * Dateipfad wird aus dem Dateipfad der Eingabedatei ermittelt.
 	 */
 	private void schreibeLoesung() {
 		String outPfad = pfad.replace(".in", ".out");
@@ -162,7 +166,8 @@ public class FileHandler {
 	}
 
 	/**
-	 * Hilfsmethode, die ein optimiertes Rätsel in einer Datei speicher. Der Dateipfad wird aus dem Dateipfad der Eingabedatei ermittelt.
+	 * Hilfsmethode, die ein optimiertes Rätsel in einer Datei speicher. Der
+	 * Dateipfad wird aus dem Dateipfad der Eingabedatei ermittelt.
 	 */
 	private void schreibeLoesungOptimiert() {
 		String outPfad = pfad.replace(".in", "_opt.out");
@@ -179,37 +184,71 @@ public class FileHandler {
 	 *            Raetsel, dass in die Datei geschrieben wird
 	 */
 	private void schreibeOutputFile(String outPfad, Raetsel r) {
-		StringBuilder outText = new StringBuilder();
-		outText.append(kommentar + "\n");
+		ArrayList<String> lines = new ArrayList<>();
+		if (kommentar.length() > 0) {
+			lines.add(kommentar);
+		}
 
-		outText.append("Eingelesene Wörter: ");
+		lines.add("Eingelesene Wörter: ");
+		String line = "";
 		for (int i = 0; i < woerter.size() - 1; i++) {
-			outText.append(woerter.get(i) + ", ");
+			line += woerter.get(i) + ", ";
 		}
-		outText.append(woerter.get(woerter.size() - 1) + "\n");
+		lines.add(line);
 
-		outText.append("\nRätsel nicht versteckt\n");
-		for (String line : r.getRasterLeer()) {
-			outText.append(line + "\n");
+		lines.add(woerter.get(woerter.size() - 1));
+
+		if (r != null) {
+
+			lines.add("");
+			for (String tmpLine : r.getRasterLeer()) {
+				lines.add(tmpLine);
+			}
+
+			lines.add("");
+			// lines.add("Rätsel versteckt");
+			for (String tmpLine : r.getRasterZufall()) {
+				lines.add(tmpLine);
+			}
+
+			// TODO Kompaktheitsmaß angeben!!!
+			lines.add("");
+			lines.add("Kompaktheitsmaß: " + r.getKompaktheitsmaß());
+		} else {
+			lines.add("");
+			lines.add("Keine Lösung gefunden");
 		}
-
-		outText.append("\nRätsel versteckt\n");
-		for (String line : r.getRasterZufall()) {
-			outText.append(line + "\n");
-		}
-
-		// TODO Kompaktheitsmaß angeben!!!
-		outText.append("\nKompaktheitsmaß: " + "???");
-
+	
 		File ausgabeDatei = new File(outPfad);
-		FileWriter fw;
 		try {
-			fw = new FileWriter(ausgabeDatei);
-			fw.write(outText.toString());
-			fw.flush();
+			Files.write(ausgabeDatei.toPath(), lines, StandardCharsets.UTF_8);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void schreibeFehlerFile(String message) {
+		String outPfad1 = pfad.replace(".in", ".out");
+		String outPfad2 = pfad.replace(".in", "_opt.out");
+
+		ArrayList<String> lines = new ArrayList<>();
+		if (kommentar.length() > 0) {
+			lines.add(kommentar);
+		}
+
+		lines.add("");
+		lines.add(message);
+
+		File ausgabeDatei1 = new File(outPfad1);
+		File ausgabeDatei2 = new File(outPfad2);
+		try {
+			Files.write(ausgabeDatei1.toPath(), lines, StandardCharsets.UTF_8);
+			Files.write(ausgabeDatei2.toPath(), lines, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }

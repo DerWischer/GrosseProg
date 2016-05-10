@@ -1,0 +1,27 @@
+;***************************
+;    Testfall 1
+;***************************
+
+Eingelesene Wörter: 
+AUTO, LADUNG, UNGARN, 
+MILCH
+
+Rätsel nicht versteckt
+MILCH 
+  AUTO
+  DN  
+  UG  
+  NA  
+  GR  
+   N  
+
+Rätsel versteckt
+MILCHN
+LOAUTO
+RLDNWE
+NMUGFZ
+RBNACG
+CFGRLG
+HAGNON
+
+Kompaktheitsmaß: 42

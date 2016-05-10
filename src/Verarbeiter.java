@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +20,8 @@ public class Verarbeiter {
 	 *         Wörter mit der erwartetet übereinstimmt.
 	 */
 	public List<Wort> loese(List<String> woerter) {
-		// TODO
-		return null;
+		ArrayList<Wort> eingetragen = new ArrayList<>();
+		return loese(eingetragen, woerter);
 	}
 
 	/**
@@ -33,8 +34,15 @@ public class Verarbeiter {
 	 *         Wörter mit der erwartetet übereinstimmt.
 	 */
 	public List<Wort> loeseOptimal(List<String> woerter) {
-		// TODO
-		return null;
+		List<Wort> lsg = loese(woerter);
+
+		if (lsg == null){
+			return null;
+		}			
+		
+		int maximaleKompaktheit = Wort.getKompaktheitsmaß(lsg);		
+		ArrayList<Wort> eingetragen = new ArrayList<>();
+		return loeseOptimal(eingetragen, woerter, maximaleKompaktheit);
 	}
 
 	/**
@@ -49,8 +57,57 @@ public class Verarbeiter {
 	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht.
 	 */
 	private List<Wort> loese(List<Wort> eingetragen, List<String> uebrig) {
-		// TODO
-		return null;
+		if (uebrig.isEmpty()) {
+			return eingetragen;
+		}
+
+		List<Wort> besteLsg = null;
+		int besteKompaktheit = Integer.MAX_VALUE;
+
+		for (String tmpU : uebrig) {
+			if (eingetragen.isEmpty()) {
+				Wort wHor = new Wort(tmpU, 0, 0, true);
+				List<Wort> kE = new ArrayList<>(eingetragen);
+				List<String> kU = new ArrayList<>(uebrig);
+				kE.add(wHor);
+				kU.remove(tmpU);
+				List<Wort> lsg = loese(kE, kU);
+				if (lsg == null) {
+					return null;
+				}
+				if (lsg.size() == uebrig.size()) {
+					return lsg;
+				} else {
+					return eingetragen;
+				}
+			} else {
+				for (Wort tmpE : eingetragen) {
+					Wort[] moegliche = tmpE.legeAn(tmpU);
+					for (Wort tmpW : moegliche) {
+						if (!Wort.checkForKollision(eingetragen, tmpW)) {
+							List<Wort> kE = new ArrayList<>(eingetragen);
+							List<String> kU = new ArrayList<>(uebrig);
+							kE.add(tmpW);
+							kU.remove(tmpU);
+							List<Wort> lsg = loese(kE, kU);
+							if (kU.isEmpty()) {
+								return lsg;
+							}
+							if (lsg != null) {
+								int kompaktheit = Wort.getKompaktheitsmaß(lsg);
+								if (kompaktheit < besteKompaktheit) {
+									besteKompaktheit = kompaktheit;
+									besteLsg = lsg;
+									return besteLsg;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+		return besteLsg;
 	}
 
 	/**
@@ -64,9 +121,63 @@ public class Verarbeiter {
 	 * @return Gibt den besten gefunden Weg zurück. Wenn die Anzahl der
 	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht.
 	 */
-	private List<Wort> loeseOptimal(List<Wort> eingetragen, List<String> uebrig) {
-		// TODO
-		return null;
+	private List<Wort> loeseOptimal(List<Wort> eingetragen, List<String> uebrig, int maximaleKompaktheit) {
+		if (uebrig.isEmpty()) {
+			return eingetragen;
+		}
+
+		int aktuelleKompaktheit = Wort.getKompaktheitsmaß(eingetragen);
+		if (aktuelleKompaktheit > maximaleKompaktheit) {
+			return eingetragen;
+		}
+
+		List<Wort> besteLsg = null;
+		int besteKompaktheit = maximaleKompaktheit;
+
+		for (String tmpU : uebrig) {
+			if (eingetragen.isEmpty()) {
+				Wort wHor = new Wort(tmpU, 0, 0, true);
+				List<Wort> kE = new ArrayList<>(eingetragen);
+				List<String> kU = new ArrayList<>(uebrig);
+				kE.add(wHor);
+				kU.remove(tmpU);
+				List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
+
+				if (lsg == null){
+					return lsg;
+				}
+				if (lsg.size() == uebrig.size()) {
+					return lsg;
+				} else {
+					return eingetragen;
+				}
+			} else {
+				for (Wort tmpE : eingetragen) {
+					Wort[] moegliche = tmpE.legeAn(tmpU);
+					for (Wort tmpW : moegliche) {
+						if (!Wort.checkForKollision(eingetragen, tmpW)) {
+							List<Wort> kE = new ArrayList<>(eingetragen);
+							List<String> kU = new ArrayList<>(uebrig);
+							kE.add(tmpW);
+							kU.remove(tmpU);
+							List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
+							if (kU.isEmpty()) {
+								return lsg;
+							}
+							if (lsg != null) {
+								int kompaktheit = Wort.getKompaktheitsmaß(lsg);
+								if (kompaktheit < besteKompaktheit) {
+									besteKompaktheit = kompaktheit;
+									besteLsg = lsg;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+		return besteLsg;
 	}
 
 }
