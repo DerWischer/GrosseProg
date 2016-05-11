@@ -94,10 +94,7 @@ public class Raetsel {
 	private char[][] erzeugeCharRaster() {
 		char[][] feld = new char[spannhöhe][spannweite];
 		for (Wort w : woerter) {
-			String text = w.getText();
-			if (text.equals("VERSUCH")){
-				int x = 1;
-			}
+			String text = w.getText();			
 			int charAtIndex = 0;
 			if (w.isHorizontal()) {
 				int zeile = w.getY();

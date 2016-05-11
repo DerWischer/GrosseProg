@@ -15,34 +15,32 @@ public class Verarbeiter {
 	 * 
 	 * @param woerter
 	 *            Alle Wörter die im Kreuzworträtsel enthalten sein sollen
-	 * @return Alle Wörter mit entsprechenden Positionen (X,Y) und
-	 *         Schreibrichtung. Es sollte geprüft werden, ob die Anzahl der
-	 *         Wörter mit der erwartetet übereinstimmt.
+	 * @return Eine Liste mit Wort-Objekten, als mögliche Lösung oder NULL wenn
+	 *         es keine Lösung gibt
 	 */
 	public List<Wort> loese(List<String> woerter) {
 		ArrayList<Wort> eingetragen = new ArrayList<>();
-		return loese(eingetragen, woerter);
+		List<Wort> result = loese(eingetragen, woerter);
+		return (result == null || result.size() < woerter.size()) ? null : result;
 	}
 
 	/**
-	 * Ermittelt eine optimierte Lösung für ein Rätsel.
+	 * Ermittelt eine optimale Lösung für ein Rätsel.
 	 * 
 	 * @param woerter
 	 *            Alle Wörter die im Kreuzworträtsel enthalten sein sollen
-	 * @return Alle Wörter mit entsprechenden Positionen (X,Y) und
-	 *         Schreibrichtung. Es sollte geprüft werden, ob die Anzahl der
-	 *         Wörter mit der erwartetet übereinstimmt.
+	 * @return Eine Liste mit Wort-Objekten, als optimale Lösung oder NULL wenn
+	 *         es keine Lösung gibt
 	 */
 	public List<Wort> loeseOptimal(List<String> woerter) {
 		List<Wort> lsg = loese(woerter);
-
-		if (lsg == null){
-			return null;
-		}			
-		
-		int maximaleKompaktheit = Wort.getKompaktheitsmaß(lsg);		
-		ArrayList<Wort> eingetragen = new ArrayList<>();
-		return loeseOptimal(eingetragen, woerter, maximaleKompaktheit);
+		if (lsg != null) {
+			int maximaleKompaktheit = Wort.getKompaktheitsmaß(lsg);
+			ArrayList<Wort> eingetragen = new ArrayList<>();
+			List<Wort> result = loeseOptimal(eingetragen, woerter, maximaleKompaktheit);
+			return (result == null || result.size() < woerter.size()) ? null : result;
+		}
+		return null;
 	}
 
 	/**
@@ -83,11 +81,11 @@ public class Verarbeiter {
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
-					for (Wort tmpW : moegliche) {											
+					for (Wort tmpW : moegliche) {
 						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {
 							List<Wort> kE = new ArrayList<>(eingetragen);
 							kE.add(tmpW);
-							List<String> kU = new ArrayList<>(uebrig);							
+							List<String> kU = new ArrayList<>(uebrig);
 							kU.remove(tmpU);
 							List<Wort> lsg = loese(kE, kU);
 							if (kU.isEmpty()) {
@@ -141,29 +139,45 @@ public class Verarbeiter {
 				List<String> kU = new ArrayList<>(uebrig);
 				kE.add(wHor);
 				kU.remove(tmpU);
-				List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
+				List<Wort> lsgH = loeseOptimal(kE, kU, besteKompaktheit);
 
-				if (lsg == null){
-					return lsg;
-				}
-				if (lsg.size() == uebrig.size()) {
-					return lsg;
+				Wort wVer = new Wort(tmpU, 0, 0, false);
+				kE.remove(wHor);
+				kE.add(wVer);
+				List<Wort> lsgV = loeseOptimal(kE, kU, besteKompaktheit);
+
+				if (lsgH == null && lsgV == null) {
+					return null;
+				} else if (lsgH != null && lsgV == null) {
+					return lsgH;
+				} else if (lsgH == null && lsgV != null) {
+					return lsgV;
 				} else {
-					return eingetragen;
+					int hKompaktheitsgrad = Integer.MAX_VALUE;
+					if (lsgH.size() == uebrig.size()) {
+						hKompaktheitsgrad = Wort.getKompaktheitsmaß(lsgH);
+					}
+
+					int vKompaktheitsgrad = Integer.MAX_VALUE;
+					if (lsgV.size() == uebrig.size()) {
+						vKompaktheitsgrad = Wort.getKompaktheitsmaß(lsgV);
+					}
+
+					return (hKompaktheitsgrad <= vKompaktheitsgrad) ? lsgH : lsgV;
 				}
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
-					for (Wort tmpW : moegliche) {																		
-						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {				
+					for (Wort tmpW : moegliche) {
+						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {
 							List<Wort> kE = new ArrayList<>(eingetragen);
 							kE.add(tmpW);
-							List<String> kU = new ArrayList<>(uebrig);							
+							List<String> kU = new ArrayList<>(uebrig);
 							kU.remove(tmpU);
 							List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
-//							if (kU.isEmpty()) {
-//								return lsg;
-//							}
+							if (kU.isEmpty()) {
+								return lsg;
+							}
 							if (lsg != null) {
 								int kompaktheit = Wort.getKompaktheitsmaß(lsg);
 								if (kompaktheit <= besteKompaktheit) {

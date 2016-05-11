@@ -1,6 +1,6 @@
 ;***************************
-;    Fehlerfall 1 b - Ungültige Zeichen (Leerzeichen im Wort)
+;    FEHLERFALL 1 B - UNGÜLTIGE ZEICHEN (LEERZEICHEN IM WORT)
 ;***************************
 
 
-Wörter düfen nur alhpabetische Zeichen enthalten: Aufgetreten in Zeile 8
+Wörter düfen nur alhpabetische Zeichen enthalten: Aufgetreten in Zeile 7 -> DIE MILCH

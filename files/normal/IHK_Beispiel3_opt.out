@@ -1,5 +1,5 @@
 ;***************************
-;    Testfall 3
+;    TESTFALL 3
 ;***************************
 
 Eingelesene Wörter: 
@@ -7,21 +7,21 @@ PRUEFUNG, AUFGABE, MATHEMATIK, INFORMATIK, PROGRAMMIERUNG,
 ZEIT
 
 Rätsel nicht versteckt
-   MATHEMATIK 
-         U    
-   Z     F    
-PRUEFUNG G    
+   ZMATHEMATIK
+PRUEFUNG      
    INFORMATIK 
-   T     B    
+   T G        
 PROGRAMMIERUNG
+     B        
+     E        
 
 Rätsel versteckt
-RFEMATHEMATIKU
-ANOWEHXXTUOEIO
-KPEZMXDMNFFGTL
-PRUEFUNGNGSZEC
-XRPINFORMATIKD
-VRDTDSDYOBSDDW
+RVEZMATHEMATIK
+PRUEFUNGRBNAIX
+RWRINFORMATIKG
+VSLTZGQOSAONJF
 PROGRAMMIERUNG
+FVDWUBAUOVAIIR
+GLBJYEBHKGNHTK
 
 Kompaktheitsmaß: 98

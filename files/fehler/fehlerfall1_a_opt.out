@@ -1,27 +1,6 @@
 ;***************************
-;    Fehlerfall 1 a - Ungültige Zeichen (Umlaut im Wort)
+;    FEHLERFALL 1 A - UNGÜLTIGE ZEICHEN (UMLAUT IM WORT)
 ;***************************
 
-Eingelesene Wörter: 
-AUTO, PRÜFUNG, LADUNG, UNGARN, 
-MILCH
 
-Rätsel nicht versteckt
-MILCHP
-  A  R
-  D  Ü
- AUTOF
-  N  U
-UNGARN
-     G
-
-Rätsel versteckt
-MILCHP
-KOAUVR
-WJDRHÜ
-AAUTOF
-LMNUZU
-UNGARN
-ISRQVG
-
-Kompaktheitsmaß: 42
+Wörter düfen nur alhpabetische Zeichen enthalten: Aufgetreten in Zeile 7 -> PRÜFUNG

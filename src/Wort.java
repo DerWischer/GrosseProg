@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.ws.Holder;
-
 /**
  * Diese Klasse repräsentiert ein Wort im Kreuzworträtsel. Wörter haben einen
  * Test, eine Richtung sowie X und Y Koordinaten
@@ -133,72 +131,63 @@ public class Wort {
 	public Wort[] legeAn(String wort) {
 		ArrayList<Wort> results = new ArrayList<>();
 
-		// prüfe ob Worte sich enthalten
 		if (text.contains(wort)) {
-			int stelle = text.indexOf(wort);
-			Wort moeglich;
+			// text enthält wort
+			int startIndex = text.indexOf(wort);
+			int x1 = x;
+			int y1 = y;
 			if (horizontal) {
-				moeglich = new Wort(wort, x + stelle, y, horizontal);
+				x1 += startIndex;
 			} else {
-				moeglich = new Wort(wort, x, y - stelle, horizontal);
+				y1 -= startIndex;
 			}
+			Wort moeglich = new Wort(wort, x1, y1, horizontal);
 			results.add(moeglich);
 		} else if (wort.contains(text)) {
-			int stelle = wort.indexOf(text);
-			Wort moeglich;
+			// wort enthält text
+			int startIndex = text.indexOf(wort);
+			int x1 = x;
+			int y1 = y;
 			if (horizontal) {
-				moeglich = new Wort(wort, x - stelle, y, horizontal);
+				x1 -= startIndex;
 			} else {
-				moeglich = new Wort(wort, x, y + stelle, horizontal);
+				y1 += startIndex;
 			}
+			Wort moeglich = new Wort(wort, x1, y1, horizontal);
 			results.add(moeglich);
 		}
 
 		for (int wIndex = 0; wIndex < wort.length(); wIndex++) {
-			char tmpC = wort.charAt(wIndex);
-			int matchIndex = text.indexOf(tmpC);
-			while (matchIndex != -1) {
-
-				// berechne Koordinaten (unterscheide dabei die richtung des
-				// wortes)
-				int x1, y1;
+			char b = wort.charAt(wIndex);
+			int nextIndex = text.indexOf(b);
+			while (nextIndex != -1) {
+				int x1 = x;
+				int y1 = y;
 				if (horizontal) {
-					x1 = this.x + matchIndex;
-					y1 = this.y + wIndex;
+					x1 += nextIndex;
+					y1 += wIndex;
 				} else {
-					x1 = this.x - wIndex;
-					y1 = this.y - matchIndex;
+					x1 -= wIndex;
+					y1 -= nextIndex;
 				}
+				Wort moeglich = new Wort(wort, x1, y1, !horizontal);
 
-				// erzeihe neues mögliches wort, mit invertierter richtung
-				Wort moeglichesWort = new Wort(wort, x1, y1, !horizontal);
-				results.add(moeglichesWort);
+				results.add(moeglich);
 
-				// ersten Buchstaben von neuen Wort an den letzten von Text
-				// anlegen
-				if (wIndex == 0 && matchIndex == text.length() - 1) {
-					if (horizontal) { // hor
-						moeglichesWort = new Wort(wort, this.x + matchIndex, this.y, true);
-						results.add(moeglichesWort);
-					} else { // vert
-						moeglichesWort = new Wort(wort, this.x, this.y - matchIndex, false);
-						results.add(moeglichesWort);
-					}
+				if (wIndex == 0 && nextIndex == text.length() - 1) {
+					// der erste Buchstabe von wort ist gleich dem letzten von
+					// text
+					moeglich = new Wort(wort, x1, y1, horizontal);
+
+					results.add(moeglich);
+				} else if (wIndex == wort.length() - 1 && nextIndex == 0) {
+					// der letzte Buchstabe von wort ist gleich dem ersten von
+					// text
+					moeglich = new Wort(wort, x1, y1, horizontal);
+
+					results.add(moeglich);
 				}
-				// letzten Buchstaben von neuen Wort an den ersten von Text
-				// anlegen
-				if (wIndex == wort.length() - 1 && matchIndex == 0) {
-					if (horizontal) { // hor
-						moeglichesWort = new Wort(wort, this.x - wort.length() + 1, this.y, true);
-						results.add(moeglichesWort);
-					} else { // vert
-						moeglichesWort = new Wort(wort, this.x, this.y + wort.length() - 1, false);
-						results.add(moeglichesWort);
-					}
-				}
-
-				// nächsten Index berechnen
-				matchIndex = text.indexOf(tmpC, matchIndex + 1);
+				nextIndex = text.indexOf(b, nextIndex + 1);
 			}
 		}
 

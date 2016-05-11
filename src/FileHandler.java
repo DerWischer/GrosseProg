@@ -62,17 +62,17 @@ public class FileHandler {
 	public List<String> lese(String pfad)
 			throws WrongFileFormatException, FileNotFoundException, EmptyFileException, MalformedInputException {
 		this.pfad = pfad;
-		
+
 		File eingabeDatei = new File(pfad);
 		// prüfe ob die Datei existiert
 		if (!eingabeDatei.exists()) {
 			throw new FileNotFoundException("Die Datei wurde nicht gefunden");
 		}
-		
+
 		// prüfe Dateiendung
 		if (!pfad.endsWith(".in")) {
 			throw new WrongFileFormatException();
-		}		
+		}
 
 		List<String> woerter = lese(eingabeDatei);
 
@@ -100,32 +100,34 @@ public class FileHandler {
 		Scanner sc = null;
 		try {
 			sc = new Scanner(eingabeDatei, "utf-8");
-
 			int currentLine = 1;
 			kommentar = "";
 			boolean kommentarValid = true;
 			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
+				String line = sc.nextLine().toUpperCase();
 				if (line.startsWith(";")) {
 					if (kommentarValid) {
 						kommentar += line + "\n";
 					} else {
 						throw new MalformedInputException(
-								"Kommentare düfen nur zu Beginn der Datei stehen: Aufgetreten in Zeile " + currentLine);
+								"Kommentare düfen nur zu Beginn der Datei stehen: Aufgetreten in Zeile " + currentLine
+										+ " -> " + line);
 					}
 				} else {
 					kommentarValid = false;
 					for (int i = 0; i < line.length(); i++) {
-						if (!Character.isAlphabetic(line.charAt(i))) {
+						int val = (int) line.charAt(i);
+						if (val < 65 || val > 90) {
+
 							throw new MalformedInputException(
 									"Wörter düfen nur alhpabetische Zeichen enthalten: Aufgetreten in Zeile "
-											+ currentLine);
+											+ currentLine + " -> " + line);
 						}
 					}
 
 					if (woerter.contains(line.toUpperCase())) {
-						throw new MalformedInputException(
-								"Wörter dürfen nur einmal vorkommen. Aufgetreten in Zeile " + currentLine);
+						throw new MalformedInputException("Wörter dürfen nur einmal vorkommen. Aufgetreten in Zeile "
+								+ currentLine + " -> " + line);
 					}
 					woerter.add(line.toUpperCase());
 				}
@@ -218,7 +220,7 @@ public class FileHandler {
 			lines.add("");
 			lines.add("Keine Lösung gefunden");
 		}
-	
+
 		File ausgabeDatei = new File(outPfad);
 		try {
 			Files.write(ausgabeDatei.toPath(), lines, StandardCharsets.UTF_8);
@@ -229,6 +231,14 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * Diese Methode wird verwendet, um Fehler in Ausgabedateien zu schreiben.
+	 * In der Ausgabedatei steht der Kommentar der Eingabedatei und darunter die
+	 * Fehlernachricht.
+	 * 
+	 * @param message
+	 *            Fehlernachricht
+	 */
 	public void schreibeFehlerFile(String message) {
 		String outPfad1 = pfad.replace(".in", ".out");
 		String outPfad2 = pfad.replace(".in", "_opt.out");
@@ -247,7 +257,6 @@ public class FileHandler {
 			Files.write(ausgabeDatei1.toPath(), lines, StandardCharsets.UTF_8);
 			Files.write(ausgabeDatei2.toPath(), lines, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
