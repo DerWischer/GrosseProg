@@ -1,5 +1,7 @@
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,7 +25,15 @@ public class Main {
 	 *            Dateipfade zu den einzulesenden Dateien
 	 */
 	public static void main(String[] args) {	
-		
+//		Wort vWort = new Wort("ABBA", -10, 1, false);
+//		Wort hWort = new Wort("ABBACadasd", -10, 1, false);	
+//		
+//		List<Wort> l = new ArrayList<Wort>();
+//		l.add(hWort);
+//		l.add(vWort);
+//		Wort.verschiebeInsPositive(l);
+//		
+//		System.out.println("Kollision? -> " + hWort.kollidieren(vWort));
 		FileHandler fileHandler = new FileHandler();
 		Verarbeiter v = new Verarbeiter();
 
@@ -32,7 +42,7 @@ public class Main {
 //				"normal/IHK_Beispiel1.in", 
 //				"normal/IHK_Beispiel2.in", 
 //				"normal/IHK_Beispiel3.in",
-				"normal/IHK_Beispiel4.in",
+//				"normal/IHK_Beispiel4.in",
 //				"fehler/fehlerfall1_a.in", 
 //				"fehler/fehlerfall1_b.in", 
 //				"fehler/fehlerfall2.in", 
@@ -42,7 +52,8 @@ public class Main {
 //				"sonder/sonderfall2.in",
 //				"test/test1.in", 
 //				"test/test2.in", 
-//				"test/test3.in" 				
+//				"test/test3.in",
+				"test/test4.in",
 				};
 
 		printTimeStamp();

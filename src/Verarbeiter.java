@@ -83,11 +83,11 @@ public class Verarbeiter {
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
-					for (Wort tmpW : moegliche) {
-						if (!Wort.checkForKollision(eingetragen, tmpW)) {
+					for (Wort tmpW : moegliche) {											
+						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {
 							List<Wort> kE = new ArrayList<>(eingetragen);
-							List<String> kU = new ArrayList<>(uebrig);
 							kE.add(tmpW);
+							List<String> kU = new ArrayList<>(uebrig);							
 							kU.remove(tmpU);
 							List<Wort> lsg = loese(kE, kU);
 							if (kU.isEmpty()) {
@@ -154,19 +154,19 @@ public class Verarbeiter {
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
-					for (Wort tmpW : moegliche) {
-						if (!Wort.checkForKollision(eingetragen, tmpW)) {
+					for (Wort tmpW : moegliche) {																		
+						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {				
 							List<Wort> kE = new ArrayList<>(eingetragen);
-							List<String> kU = new ArrayList<>(uebrig);
 							kE.add(tmpW);
+							List<String> kU = new ArrayList<>(uebrig);							
 							kU.remove(tmpU);
 							List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
-							if (kU.isEmpty()) {
-								return lsg;
-							}
+//							if (kU.isEmpty()) {
+//								return lsg;
+//							}
 							if (lsg != null) {
 								int kompaktheit = Wort.getKompaktheitsmaﬂ(lsg);
-								if (kompaktheit < besteKompaktheit) {
+								if (kompaktheit <= besteKompaktheit) {
 									besteKompaktheit = kompaktheit;
 									besteLsg = lsg;
 								}

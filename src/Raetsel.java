@@ -37,21 +37,8 @@ public class Raetsel {
 		spannweite = Wort.getSpannweite(woerter);
 		spannhöhe = Wort.getSpannhöhe(woerter);
 
-		verschiebeInsPositive();
-	}
-
-	private void verschiebeInsPositive() {
-		int minX = Wort.getMinX(woerter);
-		int minY = Wort.getMinY(woerter);
-
-		// verschiebe alle wörter ins positive
-		for (Wort w : woerter) { 
-			int tmpX = w.getX() - minX;
-			int tmpY = w.getY() - minY;
-			w.setX(tmpX);
-			w.setY(tmpY);
-		}
-	}
+		Wort.verschiebeInsPositive(woerter);
+	}	
 
 	/**
 	 * Erzeuge das Rätsel mit Leerstellen
@@ -108,6 +95,9 @@ public class Raetsel {
 		char[][] feld = new char[spannhöhe][spannweite];
 		for (Wort w : woerter) {
 			String text = w.getText();
+			if (text.equals("VERSUCH")){
+				int x = 1;
+			}
 			int charAtIndex = 0;
 			if (w.isHorizontal()) {
 				int zeile = w.getY();
