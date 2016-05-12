@@ -1,6 +1,8 @@
 package Klassen;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 import Exceptions.EmptyFileException;
 import Exceptions.MalformedInputException;
@@ -24,30 +26,19 @@ public class Main {
 	public static void main(String[] args) {
 		FileHandler fileHandler = new FileHandler();
 		Verarbeiter v = new Verarbeiter();
-
-		String[] dateien = {
-				 "ulusd",
-				"normal/IHK_Beispiel1.in", "normal/IHK_Beispiel2.in", "normal/IHK_Beispiel3.in",
-				"normal/IHK_Beispiel4.in", "fehler/fehlerfall1_a.in", "fehler/fehlerfall1_b.in",
-				"fehler/fehlerfall2.in", "fehler/fehlerfall3.in", "fehler/fehlerfall4.in", "sonder/sonderfall1.in",
-				"sonder/sonderfall2.in", "test/test1.in", "test/test2.in", "test/test3.in",
-				 "test/test4.in",
-		};
-		args = dateien;
 				
 		if (args.length == 0){
 			System.out.println("[ERR] Es wurden keine Dateipfade angegeben");
 		}
 		for (String datei : args) {
 			try {
-				List<String> woerter = fileHandler.lese("files/" + datei);
+				List<String> woerter = fileHandler.lese(datei);
 
-				Long before = System.nanoTime();
 				List<Wort> lsg = v.loese(woerter);
 				List<Wort> lsgOpt = v.loeseOptimal(woerter);
-				Long time = System.nanoTime() - before;
 
-				Raetsel r = null; // bleibt null, wenn keine Lösung gefunden
+
+				Raetsel r = null; // bleibt null, wenn keine Loesung gefunden
 									// wurde
 
 				if (lsg != null) {
@@ -60,12 +51,13 @@ public class Main {
 				}
 
 				fileHandler.schreibe(r, rOpt);
-				System.out.println(" [OK] '" + datei + "' Time=" + time);
+				
+				System.out.println(" [OK] '" + datei);
 			} catch (WrongFileFormatException | EmptyFileException | MalformedInputException e) {
 				fileHandler.schreibeFehler(e.getMessage());
-				System.out.println("[ERR] '" + datei + "'");
+				System.out.println("[ERR] '" + datei + "' : " + e.getClass().getSimpleName());
 			} catch (FileNotFoundException e) {
-				System.out.println("[ERR] '" + datei + "' : Datei wurde nicht gefunden");
+				System.out.println("[ERR] '" + datei + "' : " + e.getClass().getSimpleName());
 			}
 		}
 	}
