@@ -3,7 +3,7 @@ import java.util.List;
 
 /**
  * Diese Klasse repräsentiert ein Wort im Kreuzworträtsel. Wörter haben einen
- * Test, eine Richtung sowie X und Y Koordinaten
+ * Text, X und Y Koordinaten, sowie eine Schreibrichtung
  * 
  * @author Joshua
  *
@@ -27,7 +27,7 @@ public class Wort {
 
 	/**
 	 * Richtung des Worts. Wenn TRUE, dann wird es von links nach rechts
-	 * geschrieben. Sonst von oben nach unten
+	 * (horizontal) geschrieben. Wenn FALSE, dann von oben nach unten (vertikal)
 	 */
 	private boolean horizontal;
 
@@ -37,9 +37,9 @@ public class Wort {
 	 * @param text
 	 *            das Wort
 	 * @param x
-	 *            X-Koordinate des Worts im Rätsel
+	 *            X-Koordinate
 	 * @param y
-	 *            Y-Koordinate des Worts im Rätsel
+	 *            Y-Koordinate
 	 * @param horizontal
 	 *            Richtung des Worts. TRUE bedeutet von links nach rechts, FALSE
 	 *            heißt von oben nach unten
@@ -98,15 +98,21 @@ public class Wort {
 		return text;
 	}
 
+	/**
+	 * Gibt die Schreibrichtung zurück
+	 * 
+	 * @return TRUE bedeutet eine horizontale, FALSE eine vertikale
+	 *         Schreibrichtung
+	 */
 	public boolean isHorizontal() {
 		return this.horizontal;
 	}
 
 	/**
-	 * Gibt den Endpunkt zurück. Dies entspricht bei horizontalen Wörter der
-	 * letzten X-Koordinate. Bei vertikalen analog der Y-Koordinate.
+	 * Berechnet den Endpunkt des Wortes (X-Wert bei horizontalem Wort, sonst
+	 * Y-Wert)
 	 * 
-	 * @return X oder Y Wert
+	 * @return Endpunkt
 	 */
 	public int getEndpunkt() {
 		if (horizontal) {
@@ -195,13 +201,23 @@ public class Wort {
 	}
 
 	/**
-	 * Prüft ob zwei Worte miteinander kollidieren. Zwei Worte haben eine
-	 * Kollision, wenn sie sich überschneiden und an den Schnittpunkten oder dem
-	 * Schnittpunkt verschiedene Zeichen haben.
+	 * 
 	 * 
 	 * @param w
 	 *            Wort mit eine Kollision geprüft wird
 	 * @return TRUE wenn es eine Kollisiion gibt, sonst FALSE
+	 */
+
+	/**
+	 * Prüft ob zwei Worte miteinander kollidieren. Zwei Worte haben eine
+	 * Kollision, wenn sie sich überschneiden und an den Schnittpunkten oder dem
+	 * Schnittpunkt verschiedene Zeichen haben.
+	 * 
+	 * @param w1
+	 *            Wort das geprüft wird
+	 * @param w2
+	 *            Wort das geprüft wird
+	 * @return ob es eine Kollision gibt
 	 */
 	public static boolean kollidieren(Wort w1, Wort w2) {
 		if (w1.x < 0 || w1.y < 0 || w2.x < 0 || w2.y < 0) {
@@ -251,7 +267,7 @@ public class Wort {
 	 *            Wort das überprüft wird
 	 * @param w2
 	 *            Wort das überprüft wird
-	 * @return TRUE wenn die Worte kollidieren
+	 * @return ob es eine Kollision gibt
 	 */
 	private static boolean kollidierenHUndH(Wort w1, Wort w2) {
 		Wort lWort = (w1.x <= w2.x) ? w1 : w2;
@@ -297,7 +313,7 @@ public class Wort {
 	 *            Wort das überprüft wird
 	 * @param w2
 	 *            Wort das überprüft wird
-	 * @return TRUE wenn die Worte kollidieren
+	 * @return ob es eine Kollision gibt
 	 */
 	private static boolean kollidierenVUndV(Wort w1, Wort w2) {
 		Wort oWort = (w1.y >= w2.y) ? w1 : w2;
@@ -345,7 +361,7 @@ public class Wort {
 	 *            Wort das überprüft wird
 	 * @param w2
 	 *            Wort das überprüft wird
-	 * @return TRUE wenn die Worte kollidieren
+	 * @return ob es eine Kollision gibt
 	 */
 	private static boolean kollidierenHUndV(Wort w1, Wort w2) {
 		Wort hWort = (w1.horizontal) ? w1 : w2;
@@ -377,6 +393,13 @@ public class Wort {
 		return false;
 	}
 
+	/**
+	 * Berechnet den kleinsten X-Wert der übergebenen Wörter
+	 * 
+	 * @param woerter
+	 *            Wörter für die Berechnung
+	 * @return kleinster X-Wert
+	 */
 	public static int getMinX(List<Wort> woerter) {
 		int minX = 0;
 		for (int i = 0; i < woerter.size(); i++) {
@@ -390,6 +413,13 @@ public class Wort {
 		return minX;
 	}
 
+	/**
+	 * Berechnet den kleinsten Y-Wert der übergebenen Wörter
+	 * 
+	 * @param woerter
+	 *            Wörter für die Berechnung
+	 * @return kleinster Y-Wert
+	 */
 	public static int getMinY(List<Wort> woerter) {
 		int minY = 0;
 		for (int i = 0; i < woerter.size(); i++) {
@@ -406,7 +436,15 @@ public class Wort {
 		return minY;
 	}
 
-	public static int getSpannweite(List<Wort> woerter) {
+	/**
+	 * Berechnet die Breite/Spannweite der übergebenen Wörter. Diese entspricht
+	 * der Distanz zwischen kleinstem und größten X-Wert
+	 * 
+	 * @param woerter
+	 *            Wörter für die Berechnung
+	 * @return Breite
+	 */
+	public static int getBreite(List<Wort> woerter) {
 		int minX = 1;
 		int maxX = 1;
 		for (Wort tmp : woerter) {
@@ -422,7 +460,15 @@ public class Wort {
 		return Math.abs(maxX - minX) + 1;
 	}
 
-	public static int getSpannhöhe(List<Wort> woerter) {
+	/**
+	 * Berechnet die Höhe/Spannhöhe der übergebenen Wörter. Diese entspricht der
+	 * Distanz zwischen kleinstem und größten Y-Wert
+	 * 
+	 * @param woerter
+	 *            Wörter für die Berechnung
+	 * @return Höhe
+	 */
+	public static int getHoehe(List<Wort> woerter) {
 		int minY = 1;
 		int maxY = 1;
 		for (Wort tmp : woerter) {
@@ -437,10 +483,26 @@ public class Wort {
 		return Math.abs(maxY - minY) + 1;
 	}
 
+	/**
+	 * Berechnet das Kompaktheitsnaß: Breite * Höhe
+	 * 
+	 * @param woerter
+	 *            Wörter für die Berechnung
+	 * @return Kompaktheitsmaß
+	 */
 	public static int getKompaktheitsmaß(List<Wort> woerter) {
-		return getSpannhöhe(woerter) * getSpannweite(woerter);
+		return getHoehe(woerter) * getBreite(woerter);
 	}
 
+	/**
+	 * Überprüft ob das Wort w mit einem der Wörter aus woerter kollidiert.
+	 * 
+	 * @param woerter
+	 *            Wörter
+	 * @param w
+	 *            Wort
+	 * @return ob es eine Kollision gibt
+	 */
 	public static boolean checkLastWortForKollision(List<Wort> woerter, Wort w) {
 		for (Wort tmpW : woerter) {
 			if (Wort.kollidieren(tmpW, w)) {
@@ -450,6 +512,12 @@ public class Wort {
 		return false;
 	}
 
+	/**
+	 * Verschiebt die Wörter in Positive Koordinaten, bzw. in der I. Quadranten.
+	 * 
+	 * @param woerter
+	 *            Wörter die verschoben werden
+	 */
 	public static void verschiebeInsPositive(List<Wort> woerter) {
 		int minX = Wort.getMinX(woerter);
 		int minY = Wort.getMinY(woerter);

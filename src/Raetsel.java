@@ -34,11 +34,11 @@ public class Raetsel {
 		this.woerter = woerter;
 		random = new Random();
 
-		spannweite = Wort.getSpannweite(woerter);
-		spannhöhe = Wort.getSpannhöhe(woerter);
+		spannweite = Wort.getBreite(woerter);
+		spannhöhe = Wort.getHoehe(woerter);
 
 		Wort.verschiebeInsPositive(woerter);
-	}	
+	}
 
 	/**
 	 * Erzeuge das Rätsel mit Leerstellen
@@ -86,15 +86,15 @@ public class Raetsel {
 		}
 		return lines.toArray(new String[0]);
 	}
-	
-	public int getKompaktheitsmaß(){
+
+	public int getKompaktheitsmaß() {
 		return Wort.getKompaktheitsmaß(woerter);
 	}
 
 	private char[][] erzeugeCharRaster() {
 		char[][] feld = new char[spannhöhe][spannweite];
 		for (Wort w : woerter) {
-			String text = w.getText();			
+			String text = w.getText();
 			int charAtIndex = 0;
 			if (w.isHorizontal()) {
 				int zeile = w.getY();
@@ -108,10 +108,10 @@ public class Raetsel {
 				}
 			}
 		}
-		
+
 		char[][] finalFeld = new char[feld.length][feld[0].length];
-		for (int zeile = 0; zeile < finalFeld.length; zeile++){
-			char[] tmp = feld[feld.length-1-zeile];
+		for (int zeile = 0; zeile < finalFeld.length; zeile++) {
+			char[] tmp = feld[feld.length - 1 - zeile];
 			finalFeld[zeile] = tmp;
 		}
 		return finalFeld;

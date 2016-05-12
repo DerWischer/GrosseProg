@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -132,40 +133,22 @@ public class Verarbeiter {
 		List<Wort> besteLsg = null;
 		int besteKompaktheit = maximaleKompaktheit;
 
-		for (String tmpU : uebrig) {
-			if (eingetragen.isEmpty()) {
-				Wort wHor = new Wort(tmpU, 0, 0, true);
-				List<Wort> kE = new ArrayList<>(eingetragen);
-				List<String> kU = new ArrayList<>(uebrig);
-				kE.add(wHor);
-				kU.remove(tmpU);
-				List<Wort> lsgH = loeseOptimal(kE, kU, besteKompaktheit);
+		if (eingetragen.isEmpty()) {
+			List<String> kU = new ArrayList<>(uebrig);
+			Collections.sort(kU);
+			Collections.reverse(kU);
 
-				Wort wVer = new Wort(tmpU, 0, 0, false);
-				kE.remove(wHor);
-				kE.add(wVer);
-				List<Wort> lsgV = loeseOptimal(kE, kU, besteKompaktheit);
+			String laengstes = kU.get(0);
+			Wort wHor = new Wort(laengstes, 0, 0, true);
+			List<Wort> kE = new ArrayList<>(eingetragen);
 
-				if (lsgH == null && lsgV == null) {
-					return null;
-				} else if (lsgH != null && lsgV == null) {
-					return lsgH;
-				} else if (lsgH == null && lsgV != null) {
-					return lsgV;
-				} else {
-					int hKompaktheitsgrad = Integer.MAX_VALUE;
-					if (lsgH.size() == uebrig.size()) {
-						hKompaktheitsgrad = Wort.getKompaktheitsmaﬂ(lsgH);
-					}
+			kE.add(wHor);
+			kU.remove(laengstes);
+			List<Wort> lsgH = loeseOptimal(kE, kU, besteKompaktheit);
 
-					int vKompaktheitsgrad = Integer.MAX_VALUE;
-					if (lsgV.size() == uebrig.size()) {
-						vKompaktheitsgrad = Wort.getKompaktheitsmaﬂ(lsgV);
-					}
-
-					return (hKompaktheitsgrad <= vKompaktheitsgrad) ? lsgH : lsgV;
-				}
-			} else {
+			return lsgH;
+		} else {
+			for (String tmpU : uebrig) {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
 					for (Wort tmpW : moegliche) {
@@ -180,7 +163,7 @@ public class Verarbeiter {
 							}
 							if (lsg != null) {
 								int kompaktheit = Wort.getKompaktheitsmaﬂ(lsg);
-								if (kompaktheit <= besteKompaktheit) {
+								if (kompaktheit < besteKompaktheit) {
 									besteKompaktheit = kompaktheit;
 									besteLsg = lsg;
 								}

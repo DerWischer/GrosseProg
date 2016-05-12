@@ -9,6 +9,11 @@ import java.io.IOException;
  */
 public class MalformedInputException extends IOException {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MalformedInputException(){
 		super();
 	}

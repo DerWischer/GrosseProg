@@ -239,7 +239,7 @@ public class FileHandler {
 	 * @param message
 	 *            Fehlernachricht
 	 */
-	public void schreibeFehlerFile(String message) {
+	public void schreibeFehler(String message) {
 		String outPfad1 = pfad.replace(".in", ".out");
 		String outPfad2 = pfad.replace(".in", "_opt.out");
 
