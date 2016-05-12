@@ -1,3 +1,4 @@
+package Klassen;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -6,7 +7,7 @@ import Exceptions.MalformedInputException;
 import Exceptions.WrongFileFormatException;
 
 /**
- * Diese Klasse enthält ist der Eintrittspunkt in das Programm
+ * Diese Klasse ist der Eintrittspunkt in das Programm
  * 
  * @author Joshua
  *
@@ -24,15 +25,15 @@ public class Main {
 		FileHandler fileHandler = new FileHandler();
 		Verarbeiter v = new Verarbeiter();
 
-//		String[] dateien = {
-//				 "ulusd",
-//				"normal/IHK_Beispiel1.in", "normal/IHK_Beispiel2.in", "normal/IHK_Beispiel3.in",
-//				"normal/IHK_Beispiel4.in", "fehler/fehlerfall1_a.in", "fehler/fehlerfall1_b.in",
-//				"fehler/fehlerfall2.in", "fehler/fehlerfall3.in", "fehler/fehlerfall4.in", "sonder/sonderfall1.in",
-//				"sonder/sonderfall2.in", "test/test1.in", "test/test2.in", "test/test3.in",
-//				 "test/test4.in",
-//		};
-//		args = dateien;
+		String[] dateien = {
+				 "ulusd",
+				"normal/IHK_Beispiel1.in", "normal/IHK_Beispiel2.in", "normal/IHK_Beispiel3.in",
+				"normal/IHK_Beispiel4.in", "fehler/fehlerfall1_a.in", "fehler/fehlerfall1_b.in",
+				"fehler/fehlerfall2.in", "fehler/fehlerfall3.in", "fehler/fehlerfall4.in", "sonder/sonderfall1.in",
+				"sonder/sonderfall2.in", "test/test1.in", "test/test2.in", "test/test3.in",
+				 "test/test4.in",
+		};
+		args = dateien;
 				
 		if (args.length == 0){
 			System.out.println("[ERR] Es wurden keine Dateipfade angegeben");

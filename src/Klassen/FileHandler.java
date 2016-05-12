@@ -1,3 +1,4 @@
+package Klassen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -88,8 +89,8 @@ public class FileHandler {
 	 * Hilfsmethode, zum einlesen von Dateien. Die Datei wird Zeilenweise
 	 * gelesen und es wird geprüft, ob die Datei den Restriktionen entspricht.
 	 * 
-	 * @param eingabeDatei
-	 * @return
+	 * @param eingabeDatei Eingabedatei
+	 * @return Liste der eingelesenen Worte
 	 * @throws MalformedInputException
 	 *             Wird ausgelöst, wenn die Datei ungültigen Inhalt hat
 	 * @throws FileNotFoundException
@@ -148,8 +149,8 @@ public class FileHandler {
 	 * Eingabedatei übernommen, wobei bei der optimierten Ausgabedatei ein
 	 * "_opt" an den Dateinamen angehangen wird.
 	 * 
-	 * @param r1
-	 * @param r2
+	 * @param r1 mögliches Rätsel
+	 * @param r2 optimiertes Rätsel
 	 */
 	public void schreibe(Raetsel r1, Raetsel r2) {
 		this.r1 = r1;

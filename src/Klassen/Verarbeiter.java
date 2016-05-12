@@ -1,3 +1,4 @@
+package Klassen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,13 +57,6 @@ public class Verarbeiter {
 	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht.
 	 */
 	private List<Wort> loese(List<Wort> eingetragen, List<String> uebrig) {
-		if (uebrig.isEmpty()) {
-			return eingetragen;
-		}
-
-		List<Wort> besteLsg = null;
-		int besteKompaktheit = Integer.MAX_VALUE;
-
 		for (String tmpU : uebrig) {
 			if (eingetragen.isEmpty()) {
 				Wort wHor = new Wort(tmpU, 0, 0, true);
@@ -70,15 +64,7 @@ public class Verarbeiter {
 				List<String> kU = new ArrayList<>(uebrig);
 				kE.add(wHor);
 				kU.remove(tmpU);
-				List<Wort> lsg = loese(kE, kU);
-				if (lsg == null) {
-					return null;
-				}
-				if (lsg.size() == uebrig.size()) {
-					return lsg;
-				} else {
-					return eingetragen;
-				}
+				return loese(kE, kU);
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
@@ -89,16 +75,9 @@ public class Verarbeiter {
 							List<String> kU = new ArrayList<>(uebrig);
 							kU.remove(tmpU);
 							List<Wort> lsg = loese(kE, kU);
-							if (kU.isEmpty()) {
+
+							if (lsg != null) {														
 								return lsg;
-							}
-							if (lsg != null) {
-								int kompaktheit = Wort.getKompaktheitsmaß(lsg);
-								if (kompaktheit < besteKompaktheit) {
-									besteKompaktheit = kompaktheit;
-									besteLsg = lsg;
-									return besteLsg;
-								}
 							}
 						}
 					}
@@ -106,7 +85,7 @@ public class Verarbeiter {
 			}
 
 		}
-		return besteLsg;
+		return eingetragen;
 	}
 
 	/**
@@ -117,8 +96,10 @@ public class Verarbeiter {
 	 *            Wörter, die bereits im Kreuzworträtsel eingetragen sind
 	 * @param uebrig
 	 *            Wörter, die noch nicht im Kreuzworträtsel eingetragen sind
+	 * @param maximaleKompaktheit
+	 *            Obergrenze für das Kompaktheitsmaß
 	 * @return Gibt den besten gefunden Weg zurück. Wenn die Anzahl der
-	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht.
+	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht
 	 */
 	private List<Wort> loeseOptimal(List<Wort> eingetragen, List<String> uebrig, int maximaleKompaktheit) {
 		if (uebrig.isEmpty()) {
@@ -138,12 +119,12 @@ public class Verarbeiter {
 			Collections.sort(kU);
 			Collections.reverse(kU);
 
-			String laengstes = kU.get(0);
-			Wort wHor = new Wort(laengstes, 0, 0, true);
+			String kurz = kU.get(0);
+			Wort wHor = new Wort(kurz, 0, 0, true);
 			List<Wort> kE = new ArrayList<>(eingetragen);
 
 			kE.add(wHor);
-			kU.remove(laengstes);
+			kU.remove(kurz);
 			List<Wort> lsgH = loeseOptimal(kE, kU, besteKompaktheit);
 
 			return lsgH;
