@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Diese Klasse repräsentiert ein Kreuzworträtsel
+ * Diese Klasse repraesentiert ein Kreuzwortraetsel
  * 
  * @author Joshua
  *
@@ -12,45 +12,45 @@ import java.util.Random;
 public class Raetsel {
 
 	/**
-	 * Enthält alle im Rätsel vorkommenden Wörter
+	 * Enthaelt alle im Raetsel vorkommenden Woerter
 	 */
 	private List<Wort> woerter;
 
 	private int spannweite;
 
-	private int spannhöhe;
+	private int spannhoehe;
 
 	/**
-	 * Wird verwendet um Buchstaben zufällig zu erzeugen
+	 * Wird verwendet um Buchstaben zufaellig zu erzeugen
 	 */
 	private Random random;
 
 	/**
-	 * Erzeugt ein neues Kreuzworträtsel
+	 * Erzeugt ein neues Kreuzwortraetsel
 	 * 
 	 * @param woerter
-	 *            Wörte die im Rätsel vorkommen
+	 *            Woerte die im Raetsel vorkommen
 	 */
 	public Raetsel(List<Wort> woerter) {
 		this.woerter = woerter;
 		random = new Random();
 
 		spannweite = Wort.getBreite(woerter);
-		spannhöhe = Wort.getHoehe(woerter);
+		spannhoehe = Wort.getHoehe(woerter);
 
 		Wort.verschiebeInsPositive(woerter);
 	}
 
 	/**
-	 * Erzeuge das Rätsel mit Leerstellen
+	 * Erzeuge das Raetsel mit Leerstellen
 	 * 
-	 * @return Gibt das Rätsel zeilenweise zurück
+	 * @return Gibt das Raetsel zeilenweise zurück
 	 */
 	public String[] getRasterLeer() {
 		char[][] feld = erzeugeCharRaster();
 
 		ArrayList<String> lines = new ArrayList<>();
-		lines.add("Rätsel nicht versteckt");
+		lines.add("Raetsel nicht versteckt");
 		for (int i = 0; i < feld.length; i++) {
 			String tmp = "";
 			for (char c : feld[i]) {
@@ -65,16 +65,16 @@ public class Raetsel {
 	}
 
 	/**
-	 * Erzeuge das Rätsel mit zufällig generierten Buchstaben anstelle von
+	 * Erzeuge das Raetsel mit zufaellig generierten Buchstaben anstelle von
 	 * Leerzeichen
 	 * 
-	 * @return Gibt das Rätsel zeilenweise zurück
+	 * @return Gibt das Raetsel zeilenweise zurück
 	 */
 	public String[] getRasterZufall() {
 		char[][] feld = erzeugeCharRaster();
 
 		ArrayList<String> lines = new ArrayList<>();
-		lines.add("Rätsel versteckt");
+		lines.add("Raetsel versteckt");
 		for (int i = 0; i < feld.length; i++) {
 			String tmp = "";
 			for (char c : feld[i]) {
@@ -93,7 +93,7 @@ public class Raetsel {
 	}
 
 	private char[][] erzeugeCharRaster() {
-		char[][] feld = new char[spannhöhe][spannweite];
+		char[][] feld = new char[spannhoehe][spannweite];
 		for (Wort w : woerter) {
 			String text = w.getText();
 			int charAtIndex = 0;
