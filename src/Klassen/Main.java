@@ -1,8 +1,7 @@
 package Klassen;
 import java.io.FileNotFoundException;
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
+
 
 import Exceptions.EmptyFileException;
 import Exceptions.MalformedInputException;

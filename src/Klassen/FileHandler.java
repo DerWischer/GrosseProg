@@ -80,8 +80,6 @@ public class FileHandler {
 		if (woerter.size() == 0) {
 			throw new EmptyFileException("In der Datei sind keine Worte enthalten");
 		}
-
-		this.woerter = woerter;
 		return woerter;
 	}
 
@@ -96,8 +94,9 @@ public class FileHandler {
 	 * @throws FileNotFoundException
 	 *             Wird ausgelöst, wenn keine Datei gefunden wird
 	 */
-	private ArrayList<String> lese(File eingabeDatei) throws MalformedInputException, FileNotFoundException {
-		ArrayList<String> woerter = new ArrayList<>();
+	private ArrayList<String> lese(File eingabeDatei) throws MalformedInputException, FileNotFoundException {		
+		woerter = new ArrayList<>();
+		ArrayList<String> upperCaseWoerter = new ArrayList<>();
 		Scanner sc = null;
 		try {
 			sc = new Scanner(eingabeDatei, "utf-8");
@@ -105,7 +104,7 @@ public class FileHandler {
 			kommentar = "";
 			boolean kommentarValid = true;
 			while (sc.hasNextLine()) {
-				String line = sc.nextLine().toUpperCase();
+				String line = sc.nextLine();
 				if (line.startsWith(";")) {
 					if (kommentarValid) {
 						kommentar += line + "\n";
@@ -116,8 +115,10 @@ public class FileHandler {
 					}
 				} else {
 					kommentarValid = false;
-					for (int i = 0; i < line.length(); i++) {
-						int val = (int) line.charAt(i);
+					
+					String upperCaseLine = line.toUpperCase();
+					for (int i = 0; i < upperCaseLine.length(); i++) {
+						int val = (int) upperCaseLine.charAt(i);
 						if (val < 65 || val > 90) {
 
 							throw new MalformedInputException(
@@ -126,15 +127,18 @@ public class FileHandler {
 						}
 					}
 
-					if (woerter.contains(line.toUpperCase())) {
+					if (woerter.contains(line)) {
 						throw new MalformedInputException("Wörter dürfen nur einmal vorkommen. Aufgetreten in Zeile "
 								+ currentLine + " -> " + line);
 					}
-					woerter.add(line.toUpperCase());
+					woerter.add(line);
+					upperCaseWoerter.add(upperCaseLine);
+					
 				}
 				currentLine++;
 			}
-			return woerter;
+					
+			return upperCaseWoerter;
 		} catch (FileNotFoundException e) {
 			throw e;
 		} finally {
@@ -191,15 +195,13 @@ public class FileHandler {
 		if (kommentar.length() > 0) {
 			lines.add(kommentar);
 		}
-
-		lines.add("Eingelesene Wörter: ");
-		String line = "";
+		
+		String line = "Eingelesene Wörter: ";
 		for (int i = 0; i < woerter.size() - 1; i++) {
 			line += woerter.get(i) + ", ";
 		}
-		lines.add(line);
-
-		lines.add(woerter.get(woerter.size() - 1));
+		line += woerter.get(woerter.size() - 1);
+		lines.add(line);		
 
 		if (r != null) {
 
