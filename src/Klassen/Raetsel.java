@@ -1,10 +1,11 @@
 package Klassen;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
- * Diese Klasse repraesentiert ein Kreuzwortraetsel
+ * Diese Klasse repräsentiert ein Kreuzworträtsel
  * 
  * @author Joshua
  *
@@ -16,8 +17,14 @@ public class Raetsel {
 	 */
 	private List<Wort> woerter;
 
+	/**
+	 * Breite des Raetsels
+	 */
 	private int spannweite;
 
+	/**
+	 * Höhe des Raetsels
+	 */
 	private int spannhoehe;
 
 	/**
@@ -29,7 +36,7 @@ public class Raetsel {
 	 * Erzeugt ein neues Kreuzwortraetsel
 	 * 
 	 * @param woerter
-	 *            Woerte die im Raetsel vorkommen
+	 *            Worte die im Raetsel vorkommen
 	 */
 	public Raetsel(List<Wort> woerter) {
 		this.woerter = woerter;
@@ -55,7 +62,7 @@ public class Raetsel {
 			String tmp = "";
 			for (char c : feld[i]) {
 				if (!Character.isAlphabetic(c)) {
-					c = ' ';
+					c = ' '; // Leerzeichen einsetzen
 				}
 				tmp += c;
 			}
@@ -79,6 +86,7 @@ public class Raetsel {
 			String tmp = "";
 			for (char c : feld[i]) {
 				if (!Character.isAlphabetic(c)) {
+					// zufälligen Buchstaben generieren
 					c = (char) (65 + random.nextInt(26));
 				}
 				tmp += c;
@@ -88,13 +96,26 @@ public class Raetsel {
 		return lines.toArray(new String[0]);
 	}
 
+	/**
+	 * Berechnet das Kompaktheitsmaß des Raetsel
+	 * 
+	 * @return Kompaktheitsmaß
+	 */
 	public int getKompaktheitsmaß() {
 		return Wort.getKompaktheitsmaß(woerter);
 	}
 
+	/**
+	 * Hilfsmethode, die aus den Worten des Rätsels ein zweidimensionales
+	 * Char-Feld erzeugt
+	 * 
+	 * @return Raster des Rätsels
+	 */
 	private char[][] erzeugeCharRaster() {
 		char[][] feld = new char[spannhoehe][spannweite];
 		for (Wort w : woerter) {
+			// nacheinander jedes Wort (Zeichen für Zeichen)in das Feld
+			// schreiben
 			String text = w.getText();
 			int charAtIndex = 0;
 			if (w.isHorizontal()) {
@@ -110,6 +131,18 @@ public class Raetsel {
 			}
 		}
 
+		/*
+		 * Das Feld ist nicht im Richtigen Format. Ein Raster mit z.B den Worten Milch 
+		 * und Lupe sähe momentan so aus:
+		 * 
+		 *   E
+		 *   P
+		 *   U
+		 * MILCH		 
+		 *   
+		 * Deswegen müssen die Zeilen verschoben werden. Die letzte Zeile muss nachher 
+		 * die erste sein.
+		 */
 		char[][] finalFeld = new char[feld.length][feld[0].length];
 		for (int zeile = 0; zeile < finalFeld.length; zeile++) {
 			char[] tmp = feld[feld.length - 1 - zeile];

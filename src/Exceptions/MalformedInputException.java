@@ -14,10 +14,17 @@ public class MalformedInputException extends IOException {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Erzeugt eine Exception
+	 */
 	public MalformedInputException(){
 		super();
 	}
 
+	/**
+	 * Erzeugt eine Exception
+	 * @param message Fehlernachricht
+	 */
 	public MalformedInputException(String message){
 		super(message);
 	}

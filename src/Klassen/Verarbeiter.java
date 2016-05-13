@@ -1,4 +1,5 @@
 package Klassen;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Verarbeiter {
 	 * Ermittelt eine mögliche Lösung für ein Rätsel.
 	 * 
 	 * @param woerter
-	 *            Alle Wörter die im Kreuzworträtsel enthalten sein sollen
+	 *            Alle Worte die im Kreuzworträtsel enthalten sein sollen
 	 * @return Eine Liste mit Wort-Objekten, als mögliche Lösung oder NULL wenn
 	 *         es keine Lösung gibt
 	 */
@@ -35,9 +36,10 @@ public class Verarbeiter {
 	 *         es keine Lösung gibt
 	 */
 	public List<Wort> loeseOptimal(List<String> woerter) {
-		List<Wort> lsg = loese(woerter);
-		if (lsg != null) {
-			int maximaleKompaktheit = Wort.getKompaktheitsmaß(lsg);
+		List<Wort> moeglicheLsg = loese(woerter);
+		if (moeglicheLsg != null) {// berechne nur, wenn es überhaupt eine
+									// Lösung gibt
+			int maximaleKompaktheit = Wort.getKompaktheitsmaß(moeglicheLsg);
 			ArrayList<Wort> eingetragen = new ArrayList<>();
 			List<Wort> result = loeseOptimal(eingetragen, woerter, maximaleKompaktheit);
 			return (result == null || result.size() < woerter.size()) ? null : result;
@@ -53,12 +55,12 @@ public class Verarbeiter {
 	 *            Wörter, die bereits im Kreuzworträtsel eingetragen sind
 	 * @param uebrig
 	 *            Wörter, die noch nicht im Kreuzworträtsel eingetragen sind
-	 * @return Gibt den zuerst gefunden Weg zurück. Wenn die Anzahl der
-	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht.
+	 * @return Gibt die erste Lösung zurück.
 	 */
 	private List<Wort> loese(List<Wort> eingetragen, List<String> uebrig) {
 		for (String tmpU : uebrig) {
 			if (eingetragen.isEmpty()) {
+				// Wort horizontal anlegen
 				Wort wHor = new Wort(tmpU, 0, 0, true);
 				List<Wort> kE = new ArrayList<>(eingetragen);
 				List<String> kU = new ArrayList<>(uebrig);
@@ -68,15 +70,18 @@ public class Verarbeiter {
 			} else {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
+					// Probiere alle Möglichkeiten das Wort anzulegen aus
 					for (Wort tmpW : moegliche) {
 						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {
+							// Wort kollidiert nicht mit einem der bereits
+							// eingetragenen
 							List<Wort> kE = new ArrayList<>(eingetragen);
 							kE.add(tmpW);
 							List<String> kU = new ArrayList<>(uebrig);
 							kU.remove(tmpU);
-							List<Wort> lsg = loese(kE, kU);
 
-							if (lsg != null) {														
+							List<Wort> lsg = loese(kE, kU);
+							if (lsg != null) {
 								return lsg;
 							}
 						}
@@ -98,14 +103,15 @@ public class Verarbeiter {
 	 *            Wörter, die noch nicht im Kreuzworträtsel eingetragen sind
 	 * @param maximaleKompaktheit
 	 *            Obergrenze für das Kompaktheitsmaß
-	 * @return Gibt den besten gefunden Weg zurück. Wenn die Anzahl der
-	 *         zurückgegebenen Worte nicht der erwarteten Anzahl entspricht
+	 * @return Gibt den besten gefunden Weg zurück.
 	 */
 	private List<Wort> loeseOptimal(List<Wort> eingetragen, List<String> uebrig, int maximaleKompaktheit) {
 		if (uebrig.isEmpty()) {
+			// keine weiteren Worte die eingttragen werden müssen
 			return eingetragen;
 		}
 
+		// Obergrenze prüfen
 		int aktuelleKompaktheit = Wort.getKompaktheitsmaß(eingetragen);
 		if (aktuelleKompaktheit > maximaleKompaktheit) {
 			return eingetragen;
@@ -115,6 +121,7 @@ public class Verarbeiter {
 		int besteKompaktheit = maximaleKompaktheit;
 
 		if (eingetragen.isEmpty()) {
+			// Kopie der Liste von kleine nach groß sortieren
 			List<String> kU = new ArrayList<>(uebrig);
 			Collections.sort(kU);
 			Collections.reverse(kU);
@@ -132,17 +139,23 @@ public class Verarbeiter {
 			for (String tmpU : uebrig) {
 				for (Wort tmpE : eingetragen) {
 					Wort[] moegliche = tmpE.legeAn(tmpU);
+					// Probiere alle Möglichkeiten das Wort anzulegen aus
 					for (Wort tmpW : moegliche) {
 						if (!Wort.checkLastWortForKollision(eingetragen, tmpW)) {
+							// Wort kollidiert nicht mit einem der bereits
+							// eingetragenen
 							List<Wort> kE = new ArrayList<>(eingetragen);
 							kE.add(tmpW);
 							List<String> kU = new ArrayList<>(uebrig);
 							kU.remove(tmpU);
 							List<Wort> lsg = loeseOptimal(kE, kU, besteKompaktheit);
+
 							if (kU.isEmpty()) {
 								return lsg;
 							}
-							if (lsg != null) {
+
+							if (lsg != null) { // vergleiche mit der momentan
+												// besten Lösung
 								int kompaktheit = Wort.getKompaktheitsmaß(lsg);
 								if (kompaktheit < besteKompaktheit) {
 									besteKompaktheit = kompaktheit;

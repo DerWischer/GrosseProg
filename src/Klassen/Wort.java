@@ -1,4 +1,5 @@
 package Klassen;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,8 +111,8 @@ public class Wort {
 	}
 
 	/**
-	 * Berechnet den Endpunkt des Wortes (X-Wert bei horizontalem Wort, sonst
-	 * Y-Wert)
+	 * Berechnet den Endpunkt des Wortes (entspricht einem X-Wert bei
+	 * horizontalem Wort, sonst Y-Wert)
 	 * 
 	 * @return Endpunkt
 	 */
@@ -132,8 +133,7 @@ public class Wort {
 	 * @param wort
 	 *            Wort das angelegt werden soll
 	 * @return Ein Wort-Array, wobei jedes Wort eine Möglichkeit zum anlegen
-	 *         darstellt. Sofern es keine Möglichkeit gibt wird NULL
-	 *         zurückgegeben
+	 *         darstellt.
 	 */
 	public Wort[] legeAn(String wort) {
 		ArrayList<Wort> results = new ArrayList<>();
@@ -200,14 +200,6 @@ public class Wort {
 
 		return results.toArray(new Wort[0]);
 	}
-
-	/**
-	 * 
-	 * 
-	 * @param w
-	 *            Wort mit eine Kollision geprüft wird
-	 * @return TRUE wenn es eine Kollisiion gibt, sonst FALSE
-	 */
 
 	/**
 	 * Prüft ob zwei Worte miteinander kollidieren. Zwei Worte haben eine
@@ -297,6 +289,7 @@ public class Wort {
 				rEndeIndex = lxEnde - rxStart;
 			}
 
+			// bestimme Buchstaben im geschnittenen Bereich
 			String lBereich = lWort.text.substring(lStartIndex, lEndeIndex + 1);
 			String rBereich = rWort.text.substring(rStartIndex, rEndeIndex + 1);
 
@@ -343,7 +336,7 @@ public class Wort {
 				uEndeIndex = uyStart - oyEnde;
 			}
 
-			// bestimmte Buchstaben im geschnittenen Bereich
+			// bestimme Buchstaben im geschnittenen Bereich
 			String lBereich = oWort.text.substring(oStartIndex, oEndeIndex + 1);
 			String rBereich = uWort.text.substring(uStartIndex, uEndeIndex + 1);
 
@@ -376,10 +369,24 @@ public class Wort {
 		int yEnde = vWort.getEndpunkt();
 		int xSchranke = vWort.x;
 
+		/*  
+		 * xSchranke
+		 *     |
+		 *     L
+		 *     U
+		 *     P
+		 *     E
+		 *     |
+		 * --MILCH--- ySchranke
+		 *     |
+		 *     | 
+		 */
+				
 		boolean vGeschnitten = xSchranke >= xStart && xSchranke <= xEnde;
 		boolean hGeschnitten = ySchranke <= yStart && ySchranke >= yEnde;
 
 		if (vGeschnitten && hGeschnitten) {
+			// Worte überschneiden sich
 			int hStelle = xSchranke - xStart;
 			char hBuchstabe = hWort.text.charAt(hStelle);
 
@@ -514,7 +521,9 @@ public class Wort {
 	}
 
 	/**
-	 * Verschiebt die Wörter in Positive Koordinaten, bzw. in der I. Quadranten.
+	 * Verschiebt die Wörter in Positive Koordinaten, bzw. in der I. Quadranten. 
+	 * Mit positven Koordinaten sind die Berechnungen von Schnittpunkten und
+	 * Schnittbereichen einfacher/einheitlich 
 	 * 
 	 * @param woerter
 	 *            Wörter die verschoben werden
@@ -523,7 +532,6 @@ public class Wort {
 		int minX = Wort.getMinX(woerter);
 		int minY = Wort.getMinY(woerter);
 
-		// verschiebe alle wörter ins positive
 		for (Wort w : woerter) {
 			int tmpX = w.getX() - minX;
 			int tmpY = w.getY() - minY;

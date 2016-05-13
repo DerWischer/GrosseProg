@@ -1,4 +1,5 @@
 package Klassen;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import Exceptions.WrongFileFormatException;
 public class FileHandler {
 
 	/**
-	 * Kommentar, der in Eingabedateien steht
+	 * Kommentar der in der eingelesenen Eingabedatei steht
 	 */
 	private String kommentar;
 
@@ -36,7 +37,7 @@ public class FileHandler {
 	private Raetsel r2;
 
 	/**
-	 * Pfad zur Eingabedatei
+	 * Pfad zur eingelesenen Eingabedatei
 	 */
 	private String pfad;
 
@@ -75,6 +76,7 @@ public class FileHandler {
 			throw new WrongFileFormatException();
 		}
 
+		// Lese die Datei
 		List<String> woerter = lese(eingabeDatei);
 
 		if (woerter.size() == 0) {
@@ -87,25 +89,31 @@ public class FileHandler {
 	 * Hilfsmethode, zum einlesen von Dateien. Die Datei wird Zeilenweise
 	 * gelesen und es wird geprüft, ob die Datei den Restriktionen entspricht.
 	 * 
-	 * @param eingabeDatei Eingabedatei
+	 * @param eingabeDatei
+	 *            Eingabedatei
 	 * @return Liste der eingelesenen Worte
 	 * @throws MalformedInputException
 	 *             Wird ausgelöst, wenn die Datei ungültigen Inhalt hat
 	 * @throws FileNotFoundException
 	 *             Wird ausgelöst, wenn keine Datei gefunden wird
 	 */
-	private ArrayList<String> lese(File eingabeDatei) throws MalformedInputException, FileNotFoundException {		
+	private ArrayList<String> lese(File eingabeDatei) throws MalformedInputException, FileNotFoundException {
 		woerter = new ArrayList<>();
-		ArrayList<String> upperCaseWoerter = new ArrayList<>();
+		ArrayList<String> upperCaseWoerter = new ArrayList<>(); // enthält die
+																// eingelesenen
+																// Wörter in
+																// Großbuchstaben
 		Scanner sc = null;
 		try {
 			sc = new Scanner(eingabeDatei, "utf-8");
-			int currentLine = 1;
+			int currentLine = 1; // Zeilenzähler
 			kommentar = "";
 			boolean kommentarValid = true;
+
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.startsWith(";")) {
+
+				if (line.startsWith(";")) { // Kommentarzeilen
 					if (kommentarValid) {
 						kommentar += line + "\n";
 					} else {
@@ -113,14 +121,13 @@ public class FileHandler {
 								"Kommentare düfen nur zu Beginn der Datei stehen: Aufgetreten in Zeile " + currentLine
 										+ " -> " + line);
 					}
-				} else {
+				} else { // Wörter
 					kommentarValid = false;
-					
+
 					String upperCaseLine = line.toUpperCase();
 					for (int i = 0; i < upperCaseLine.length(); i++) {
 						int val = (int) upperCaseLine.charAt(i);
-						if (val < 65 || val > 90) {
-
+						if (val < 65 || val > 90) { // Ascii Werte A - Z 
 							throw new MalformedInputException(
 									"Wörter düfen nur alhpabetische Zeichen enthalten: Aufgetreten in Zeile "
 											+ currentLine + " -> " + line);
@@ -133,17 +140,17 @@ public class FileHandler {
 					}
 					woerter.add(line);
 					upperCaseWoerter.add(upperCaseLine);
-					
+
 				}
 				currentLine++;
 			}
-					
 			return upperCaseWoerter;
 		} catch (FileNotFoundException e) {
 			throw e;
 		} finally {
-			if (sc != null)
+			if (sc != null){
 				sc.close();
+			}
 		}
 	}
 
@@ -153,8 +160,10 @@ public class FileHandler {
 	 * Eingabedatei übernommen, wobei bei der optimierten Ausgabedatei ein
 	 * "_opt" an den Dateinamen angehangen wird.
 	 * 
-	 * @param r1 mögliches Rätsel
-	 * @param r2 optimiertes Rätsel
+	 * @param r1
+	 *            mögliches Rätsel
+	 * @param r2
+	 *            optimiertes Rätsel
 	 */
 	public void schreibe(Raetsel r1, Raetsel r2) {
 		this.r1 = r1;
@@ -195,28 +204,25 @@ public class FileHandler {
 		if (kommentar.length() > 0) {
 			lines.add(kommentar);
 		}
-		
+
 		String line = "Eingelesene Wörter: ";
 		for (int i = 0; i < woerter.size() - 1; i++) {
 			line += woerter.get(i) + ", ";
 		}
 		line += woerter.get(woerter.size() - 1);
-		lines.add(line);		
+		lines.add(line);
 
 		if (r != null) {
 
-			lines.add("");
+			lines.add(""); // leeres Raster schreiben
 			for (String tmpLine : r.getRasterLeer()) {
 				lines.add(tmpLine);
 			}
 
-			lines.add("");
-			// lines.add("Rätsel versteckt");
+			lines.add(""); // gefülltes Raster schreiben 			
 			for (String tmpLine : r.getRasterZufall()) {
 				lines.add(tmpLine);
-			}
-
-			// TODO Kompaktheitsmaß angeben!!!
+			} 
 			lines.add("");
 			lines.add("Kompaktheitsmaß: " + r.getKompaktheitsmaß());
 		} else {
@@ -228,8 +234,7 @@ public class FileHandler {
 		try {
 			Files.write(ausgabeDatei.toPath(), lines, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("[ERR] '" + ausgabeDatei.getName() + "' : " + e.getClass().getSimpleName());
 		}
 
 	}
@@ -249,18 +254,21 @@ public class FileHandler {
 		ArrayList<String> lines = new ArrayList<>();
 		if (kommentar.length() > 0) {
 			lines.add(kommentar);
-		}
-
-		lines.add("");
+		}		
 		lines.add(message);
 
-		File ausgabeDatei1 = new File(outPfad1);
-		File ausgabeDatei2 = new File(outPfad2);
+		File ausgabeDatei1 = new File(outPfad1);		
 		try {
-			Files.write(ausgabeDatei1.toPath(), lines, StandardCharsets.UTF_8);
+			Files.write(ausgabeDatei1.toPath(), lines, StandardCharsets.UTF_8);			
+		} catch (IOException e) {
+			System.out.println("[ERR] '" + ausgabeDatei1.getName() + "' : " + e.getClass().getSimpleName());
+		}
+		
+		File ausgabeDatei2 = new File(outPfad2);
+		try {			
 			Files.write(ausgabeDatei2.toPath(), lines, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("[ERR] '" + ausgabeDatei2.getName() + "' : " + e.getClass().getSimpleName());
 		}
 	}
 }
